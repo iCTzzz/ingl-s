@@ -1,0 +1,774 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+<title>400 Verbos en Inglés</title>
+<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400;700&family=DM+Sans:wght@300;400;500&display=swap" rel="stylesheet">
+<style>
+  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+  :root {
+    --bg: #0f0e17;
+    --surface: #1a1827;
+    --card: #211f33;
+    --accent: #e8c547;
+    --accent2: #a78bfa;
+    --text: #fffffe;
+    --muted: #a7a5bb;
+    --border: rgba(255,255,255,0.08);
+    --green: #4ade80;
+    --coral: #f87171;
+  }
+
+  html, body {
+    height: 100%;
+    overflow: hidden;
+    background: var(--bg);
+    color: var(--text);
+    font-family: 'DM Sans', sans-serif;
+    touch-action: pan-y;
+    user-select: none;
+  }
+
+  .app {
+    height: 100dvh;
+    display: flex;
+    flex-direction: column;
+    max-width: 480px;
+    margin: 0 auto;
+    position: relative;
+    overflow: hidden;
+  }
+
+  /* BG decoration */
+  .bg-orb {
+    position: fixed;
+    border-radius: 50%;
+    filter: blur(80px);
+    opacity: 0.18;
+    pointer-events: none;
+    z-index: 0;
+  }
+  .bg-orb-1 { width: 300px; height: 300px; background: var(--accent2); top: -80px; left: -80px; }
+  .bg-orb-2 { width: 250px; height: 250px; background: var(--accent); bottom: 80px; right: -60px; }
+
+  /* HEADER */
+  .header {
+    position: relative;
+    z-index: 10;
+    padding: 20px 24px 12px;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+  }
+  .logo {
+    font-family: 'Playfair Display', serif;
+    font-size: 18px;
+    color: var(--text);
+    letter-spacing: -0.3px;
+  }
+  .logo span { color: var(--accent); }
+  .header-right {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+  }
+  .btn-search {
+    width: 36px; height: 36px;
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: 10px;
+    color: var(--muted);
+    font-size: 18px;
+    cursor: pointer;
+    display: flex; align-items: center; justify-content: center;
+    transition: background 0.2s;
+  }
+  .btn-search:active { background: var(--card); }
+
+  /* PROGRESS */
+  .progress-wrap {
+    position: relative;
+    z-index: 10;
+    padding: 0 24px 8px;
+  }
+  .progress-text {
+    display: flex;
+    justify-content: space-between;
+    font-size: 12px;
+    color: var(--muted);
+    margin-bottom: 6px;
+    font-weight: 300;
+  }
+  .progress-bar {
+    height: 3px;
+    background: var(--border);
+    border-radius: 99px;
+    overflow: hidden;
+  }
+  .progress-fill {
+    height: 100%;
+    background: linear-gradient(90deg, var(--accent2), var(--accent));
+    border-radius: 99px;
+    transition: width 0.3s cubic-bezier(.4,0,.2,1);
+  }
+
+  /* CATEGORY FILTER */
+  .cat-scroll {
+    position: relative;
+    z-index: 10;
+    padding: 4px 24px 12px;
+    overflow-x: auto;
+    white-space: nowrap;
+    scrollbar-width: none;
+    -ms-overflow-style: none;
+  }
+  .cat-scroll::-webkit-scrollbar { display: none; }
+  .cat-pill {
+    display: inline-block;
+    padding: 6px 14px;
+    margin-right: 8px;
+    font-size: 12px;
+    font-weight: 500;
+    border-radius: 99px;
+    border: 1px solid var(--border);
+    color: var(--muted);
+    cursor: pointer;
+    transition: all 0.2s;
+    background: transparent;
+  }
+  .cat-pill.active {
+    background: var(--accent);
+    color: #0f0e17;
+    border-color: var(--accent);
+    font-weight: 600;
+  }
+
+  /* CARD AREA */
+  .card-area {
+    position: relative;
+    z-index: 5;
+    flex: 1;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 0 20px;
+    overflow: hidden;
+  }
+
+  .card-stack {
+    position: relative;
+    width: 100%;
+    max-width: 360px;
+    height: 380px;
+  }
+
+  /* Ghost cards behind */
+  .card-ghost {
+    position: absolute;
+    inset: 0;
+    background: var(--card);
+    border-radius: 28px;
+    border: 1px solid var(--border);
+    transition: transform 0.3s cubic-bezier(.4,0,.2,1);
+  }
+  .card-ghost-2 {
+    transform: scale(0.92) translateY(18px);
+    opacity: 0.5;
+  }
+  .card-ghost-3 {
+    transform: scale(0.85) translateY(34px);
+    opacity: 0.25;
+  }
+
+  /* Main card */
+  .card-main {
+    position: absolute;
+    inset: 0;
+    background: var(--card);
+    border-radius: 28px;
+    border: 1px solid var(--border);
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    padding: 40px 32px;
+    cursor: grab;
+    transition: transform 0.08s ease, box-shadow 0.2s;
+    will-change: transform;
+    box-shadow: 0 20px 60px rgba(0,0,0,0.4);
+  }
+  .card-main:active { cursor: grabbing; }
+  .card-main.animating {
+    transition: transform 0.35s cubic-bezier(.4,0,.2,1), opacity 0.35s ease;
+  }
+  .card-main.slide-left {
+    transform: translateX(-120%) rotate(-8deg) !important;
+    opacity: 0;
+  }
+  .card-main.slide-right {
+    transform: translateX(120%) rotate(8deg) !important;
+    opacity: 0;
+  }
+  .card-main.slide-in-left {
+    animation: slideInLeft 0.35s cubic-bezier(.4,0,.2,1) forwards;
+  }
+  .card-main.slide-in-right {
+    animation: slideInRight 0.35s cubic-bezier(.4,0,.2,1) forwards;
+  }
+
+  @keyframes slideInLeft {
+    from { transform: translateX(60%) rotate(5deg); opacity: 0; }
+    to { transform: none; opacity: 1; }
+  }
+  @keyframes slideInRight {
+    from { transform: translateX(-60%) rotate(-5deg); opacity: 0; }
+    to { transform: none; opacity: 1; }
+  }
+
+  .card-number {
+    font-size: 11px;
+    font-weight: 500;
+    letter-spacing: 2px;
+    text-transform: uppercase;
+    color: var(--muted);
+    margin-bottom: 24px;
+  }
+  .card-cat-badge {
+    font-size: 11px;
+    font-weight: 600;
+    letter-spacing: 1px;
+    text-transform: uppercase;
+    padding: 4px 12px;
+    border-radius: 99px;
+    margin-bottom: 28px;
+    background: rgba(232,197,71,0.12);
+    color: var(--accent);
+    border: 1px solid rgba(232,197,71,0.25);
+  }
+  .card-en {
+    font-family: 'Playfair Display', serif;
+    font-size: 52px;
+    font-weight: 700;
+    color: var(--text);
+    text-align: center;
+    line-height: 1.1;
+    margin-bottom: 16px;
+    letter-spacing: -1px;
+  }
+  .card-divider {
+    width: 40px;
+    height: 2px;
+    background: linear-gradient(90deg, var(--accent2), var(--accent));
+    border-radius: 99px;
+    margin: 0 auto 16px;
+  }
+  .card-es {
+    font-size: 22px;
+    font-weight: 300;
+    color: var(--muted);
+    text-align: center;
+    line-height: 1.4;
+  }
+
+  /* Swipe hint */
+  .swipe-hint {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    font-size: 11px;
+    color: rgba(167,165,187,0.5);
+    margin-top: 20px;
+    font-weight: 300;
+    letter-spacing: 0.5px;
+  }
+  .swipe-hint svg { opacity: 0.4; }
+
+  /* BOTTOM NAV */
+  .bottom-nav {
+    position: relative;
+    z-index: 10;
+    padding: 12px 24px 28px;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 12px;
+  }
+  .nav-btn {
+    width: 56px; height: 56px;
+    border-radius: 18px;
+    border: 1px solid var(--border);
+    background: var(--surface);
+    color: var(--text);
+    font-size: 22px;
+    cursor: pointer;
+    display: flex; align-items: center; justify-content: center;
+    transition: all 0.15s;
+    flex-shrink: 0;
+  }
+  .nav-btn:active { transform: scale(0.93); background: var(--card); }
+  .nav-btn.prev svg { transform: rotate(180deg); }
+
+  .btn-fav {
+    background: var(--surface);
+    border-color: var(--border);
+    color: var(--muted);
+  }
+  .btn-fav.active { color: var(--coral); border-color: var(--coral); background: rgba(248,113,113,0.1); }
+
+  .counter-pill {
+    flex: 1;
+    height: 56px;
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: 18px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 14px;
+    color: var(--muted);
+    font-weight: 400;
+    cursor: pointer;
+    transition: background 0.2s;
+  }
+  .counter-pill strong { color: var(--text); font-size: 16px; margin: 0 3px; font-weight: 500; }
+  .counter-pill:active { background: var(--card); }
+
+  /* SEARCH OVERLAY */
+  .search-overlay {
+    position: fixed;
+    inset: 0;
+    background: rgba(15,14,23,0.95);
+    z-index: 100;
+    display: flex;
+    flex-direction: column;
+    padding: 20px;
+    opacity: 0;
+    pointer-events: none;
+    transition: opacity 0.2s;
+  }
+  .search-overlay.open { opacity: 1; pointer-events: all; }
+  .search-top {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    margin-bottom: 16px;
+  }
+  .search-input-wrap {
+    flex: 1;
+    position: relative;
+  }
+  .search-icon-inside {
+    position: absolute;
+    left: 14px; top: 50%;
+    transform: translateY(-50%);
+    color: var(--muted);
+    font-size: 18px;
+  }
+  .search-input {
+    width: 100%;
+    height: 48px;
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: 14px;
+    color: var(--text);
+    font-family: 'DM Sans', sans-serif;
+    font-size: 16px;
+    padding: 0 16px 0 44px;
+    outline: none;
+  }
+  .search-input:focus { border-color: var(--accent2); }
+  .search-cancel {
+    font-size: 14px;
+    color: var(--muted);
+    cursor: pointer;
+    white-space: nowrap;
+    padding: 8px;
+  }
+  .search-results {
+    flex: 1;
+    overflow-y: auto;
+    scrollbar-width: none;
+  }
+  .search-results::-webkit-scrollbar { display: none; }
+  .search-item {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 16px 4px;
+    border-bottom: 1px solid var(--border);
+    cursor: pointer;
+    transition: opacity 0.15s;
+  }
+  .search-item:active { opacity: 0.6; }
+  .si-left .si-en { font-family: 'Playfair Display', serif; font-size: 20px; color: var(--text); }
+  .si-left .si-es { font-size: 13px; color: var(--muted); margin-top: 2px; font-weight: 300; }
+  .si-badge { font-size: 10px; font-weight: 600; letter-spacing: 0.5px; text-transform: uppercase; padding: 3px 9px; border-radius: 99px; background: rgba(232,197,71,0.12); color: var(--accent); border: 1px solid rgba(232,197,71,0.2); }
+  .search-empty { text-align: center; color: var(--muted); padding: 3rem; font-size: 15px; }
+</style>
+</head>
+<body>
+<div class="bg-orb bg-orb-1"></div>
+<div class="bg-orb bg-orb-2"></div>
+
+<div class="app">
+
+  <div class="header">
+    <div class="logo">verb<span>.</span>es</div>
+    <div class="header-right">
+      <button class="btn-search" id="btnSearch" title="Buscar">
+        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg>
+      </button>
+    </div>
+  </div>
+
+  <div class="progress-wrap">
+    <div class="progress-text">
+      <span id="progressLabel">Todos los verbos</span>
+      <span id="progressPct">0%</span>
+    </div>
+    <div class="progress-bar"><div class="progress-fill" id="progressFill"></div></div>
+  </div>
+
+  <div class="cat-scroll" id="catScroll"></div>
+
+  <div class="card-area">
+    <div class="card-stack" id="cardStack">
+      <div class="card-ghost card-ghost-3" id="ghost3"></div>
+      <div class="card-ghost card-ghost-2" id="ghost2"></div>
+      <div class="card-main" id="cardMain">
+        <div class="card-number" id="cardNumber">001 / 400</div>
+        <div class="card-cat-badge" id="cardCat">esenciales</div>
+        <div class="card-en" id="cardEn">be</div>
+        <div class="card-divider"></div>
+        <div class="card-es" id="cardEs">ser / estar</div>
+      </div>
+    </div>
+    <div class="swipe-hint">
+      <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M9 18l6-6-6-6"/></svg>
+      Desliza o usa las flechas
+      <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M15 18l-6-6 6-6"/></svg>
+    </div>
+  </div>
+
+  <div class="bottom-nav">
+    <button class="nav-btn prev" id="btnPrev">
+      <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"><path d="M9 18l6-6-6-6"/></svg>
+    </button>
+
+    <div class="counter-pill" id="counterPill">
+      <strong id="idxDisplay">1</strong> de <strong id="totalDisplay">400</strong>
+    </div>
+
+    <button class="nav-btn btn-fav" id="btnFav" title="Favorito">
+      <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" id="favIcon"><path d="M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 0 0-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 0 0 0-7.78z"></path></svg>
+    </button>
+
+    <button class="nav-btn" id="btnNext">
+      <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"><path d="M9 18l6-6-6-6"/></svg>
+    </button>
+  </div>
+
+</div>
+
+<!-- SEARCH OVERLAY -->
+<div class="search-overlay" id="searchOverlay">
+  <div class="search-top">
+    <div class="search-input-wrap">
+      <span class="search-icon-inside">
+        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg>
+      </span>
+      <input type="text" class="search-input" id="searchInput" placeholder="Buscar en inglés o español..." autocomplete="off" />
+    </div>
+    <span class="search-cancel" id="searchCancel">Cancelar</span>
+  </div>
+  <div class="search-results" id="searchResults"></div>
+</div>
+
+<script>
+const verbos = [
+  ["be","ser / estar","esenciales"],["have","tener / haber","esenciales"],["do","hacer","esenciales"],["say","decir","comunicación"],["go","ir","movimiento"],
+  ["get","obtener / conseguir","esenciales"],["make","hacer / crear","esenciales"],["know","saber / conocer","conocimiento"],["think","pensar","mente"],["take","tomar / llevar","esenciales"],
+  ["see","ver","percepción"],["come","venir","movimiento"],["want","querer","deseo"],["look","mirar / parecer","percepción"],["use","usar / utilizar","acción"],
+  ["find","encontrar","búsqueda"],["give","dar","acción"],["tell","decir / contar","comunicación"],["work","trabajar","trabajo"],["call","llamar","comunicación"],
+  ["try","intentar","acción"],["ask","preguntar / pedir","comunicación"],["need","necesitar","deseo"],["feel","sentir","emoción"],["become","convertirse","cambio"],
+  ["leave","dejar / salir","movimiento"],["put","poner","acción"],["mean","significar","conocimiento"],["keep","mantener / guardar","acción"],["let","dejar / permitir","acción"],
+  ["begin","comenzar","cambio"],["show","mostrar","comunicación"],["hear","oír","percepción"],["play","jugar / tocar","ocio"],["run","correr / funcionar","movimiento"],
+  ["move","mover / moverse","movimiento"],["live","vivir","esenciales"],["believe","creer","mente"],["hold","sostener / celebrar","acción"],["bring","traer","movimiento"],
+  ["happen","ocurrir / suceder","cambio"],["write","escribir","comunicación"],["provide","proporcionar","acción"],["sit","sentarse","movimiento"],["stand","estar de pie","movimiento"],
+  ["lose","perder","resultado"],["pay","pagar","comercio"],["meet","conocer / reunirse","social"],["include","incluir","organización"],["continue","continuar","cambio"],
+  ["set","establecer / poner","acción"],["learn","aprender","conocimiento"],["change","cambiar","cambio"],["lead","liderar / llevar","liderazgo"],["understand","entender","conocimiento"],
+  ["watch","observar / ver","percepción"],["follow","seguir","movimiento"],["stop","parar / detener","acción"],["create","crear","creación"],["speak","hablar","comunicación"],
+  ["read","leer","conocimiento"],["spend","gastar / pasar tiempo","comercio"],["grow","crecer","cambio"],["open","abrir","acción"],["walk","caminar","movimiento"],
+  ["win","ganar","resultado"],["offer","ofrecer","acción"],["remember","recordar","mente"],["love","amar / encantar","emoción"],["consider","considerar","mente"],
+  ["appear","aparecer / parecer","percepción"],["buy","comprar","comercio"],["wait","esperar","acción"],["serve","servir","trabajo"],["die","morir","esenciales"],
+  ["send","enviar","comunicación"],["expect","esperar / anticipar","deseo"],["build","construir","creación"],["stay","quedarse","movimiento"],["fall","caer","movimiento"],
+  ["cut","cortar","acción"],["reach","alcanzar / llegar","acción"],["kill","matar","resultado"],["remain","permanecer","cambio"],["suggest","sugerir","comunicación"],
+  ["raise","levantar / aumentar","acción"],["pass","pasar","movimiento"],["sell","vender","comercio"],["require","requerir","organización"],["report","reportar / informar","comunicación"],
+  ["decide","decidir","mente"],["pull","jalar / tirar","acción"],["break","romper","acción"],["receive","recibir","acción"],["agree","estar de acuerdo","social"],
+  ["support","apoyar","social"],["hit","golpear","acción"],["produce","producir","creación"],["eat","comer","esenciales"],["cover","cubrir","acción"],
+  ["catch","atrapar / coger","acción"],["draw","dibujar / atraer","creación"],["choose","elegir","mente"],["cause","causar","resultado"],["point","señalar","comunicación"],
+  ["listen","escuchar","percepción"],["turn","girar / convertirse","cambio"],["start","empezar","cambio"],["reduce","reducir","cambio"],["allow","permitir","acción"],
+  ["add","añadir","acción"],["prevent","prevenir","acción"],["develop","desarrollar","cambio"],["carry","cargar / llevar","movimiento"],["drive","conducir / manejar","movimiento"],
+  ["throw","lanzar / tirar","acción"],["exist","existir","esenciales"],["return","regresar / devolver","movimiento"],["claim","afirmar / reclamar","comunicación"],["fail","fallar / fracasar","resultado"],
+  ["sing","cantar","creación"],["swim","nadar","movimiento"],["fly","volar","movimiento"],["ride","montar / andar","movimiento"],["sleep","dormir","esenciales"],
+  ["wake","despertar","esenciales"],["drink","beber","esenciales"],["smile","sonreír","emoción"],["cry","llorar","emoción"],["laugh","reír","emoción"],
+  ["thank","agradecer","social"],["help","ayudar","social"],["hurt","doler / lastimar","percepción"],["touch","tocar","percepción"],["smell","oler","percepción"],
+  ["taste","saborear / probar","percepción"],["push","empujar","acción"],["climb","escalar / subir","movimiento"],["jump","saltar","movimiento"],["drop","soltar / caer","acción"],
+  ["shake","sacudir / agitar","acción"],["press","presionar","acción"],["lift","levantar","acción"],["grab","agarrar","acción"],["fold","doblar","acción"],
+  ["tear","rasgar / romper","acción"],["pour","verter / servir","acción"],["mix","mezclar","acción"],["fill","llenar","acción"],["empty","vaciar","acción"],
+  ["clean","limpiar","trabajo"],["wash","lavar","trabajo"],["dry","secar","trabajo"],["cook","cocinar","trabajo"],["bake","hornear","trabajo"],
+  ["fry","freír","trabajo"],["boil","hervir","trabajo"],["chop","picar / trocear","acción"],["stir","revolver / agitar","acción"],["plant","plantar","creación"],
+  ["water","regar","creación"],["pick","recoger / escoger","acción"],["harvest","cosechar","creación"],["design","diseñar","creación"],["paint","pintar","creación"],
+  ["sew","coser","creación"],["knit","tejer","creación"],["carve","esculpir / tallar","creación"],["fix","arreglar / reparar","trabajo"],["repair","reparar","trabajo"],
+  ["install","instalar","trabajo"],["connect","conectar","trabajo"],["disconnect","desconectar","trabajo"],["charge","cargar / cobrar","trabajo"],["save","guardar / ahorrar","acción"],
+  ["delete","eliminar / borrar","acción"],["copy","copiar","acción"],["paste","pegar","acción"],["print","imprimir","trabajo"],["scan","escanear","trabajo"],
+  ["download","descargar","tecnología"],["upload","subir / cargar","tecnología"],["search","buscar","búsqueda"],["click","hacer clic","tecnología"],["type","escribir / teclear","tecnología"],
+  ["swipe","deslizar","tecnología"],["zoom","ampliar / hacer zoom","tecnología"],["share","compartir","social"],["post","publicar / enviar","comunicación"],["comment","comentar","comunicación"],
+  ["like","gustar / dar me gusta","emoción"],["block","bloquear","social"],["message","enviar mensaje","comunicación"],["text","enviar texto","comunicación"],["email","enviar correo","comunicación"],
+  ["chat","charlar","comunicación"],["greet","saludar","social"],["introduce","presentar","social"],["invite","invitar","social"],["join","unirse / unir","social"],
+  ["belong","pertenecer","social"],["visit","visitar","social"],["travel","viajar","movimiento"],["arrive","llegar","movimiento"],["depart","partir / salir","movimiento"],
+  ["board","abordar / subir","movimiento"],["land","aterrizar","movimiento"],["park","estacionar","movimiento"],["accelerate","acelerar","movimiento"],["brake","frenar","movimiento"],
+  ["reverse","dar reversa","movimiento"],["navigate","navegar","movimiento"],["explore","explorar","búsqueda"],["discover","descubrir","conocimiento"],["investigate","investigar","conocimiento"],
+  ["research","investigar a fondo","conocimiento"],["study","estudiar","conocimiento"],["analyze","analizar","conocimiento"],["examine","examinar","conocimiento"],["test","probar / examinar","conocimiento"],
+  ["measure","medir","conocimiento"],["calculate","calcular","conocimiento"],["estimate","estimar","conocimiento"],["compare","comparar","conocimiento"],["evaluate","evaluar","conocimiento"],
+  ["assess","valorar / evaluar","conocimiento"],["judge","juzgar","mente"],["guess","adivinar / suponer","mente"],["imagine","imaginar","mente"],["dream","soñar","mente"],
+  ["plan","planear / planificar","organización"],["organize","organizar","organización"],["arrange","arreglar / organizar","organización"],["schedule","programar","organización"],["prepare","preparar","organización"],
+  ["manage","gestionar / manejar","liderazgo"],["control","controlar","liderazgo"],["direct","dirigir","liderazgo"],["guide","guiar","liderazgo"],["teach","enseñar","conocimiento"],
+  ["train","entrenar","conocimiento"],["coach","entrenar / asesorar","liderazgo"],["mentor","mentorear","liderazgo"],["advise","aconsejar","comunicación"],["recommend","recomendar","comunicación"],
+  ["warn","advertir","comunicación"],["inform","informar","comunicación"],["explain","explicar","comunicación"],["describe","describir","comunicación"],["define","definir","comunicación"],
+  ["translate","traducir","comunicación"],["interpret","interpretar","comunicación"],["express","expresar","comunicación"],["communicate","comunicar","comunicación"],["negotiate","negociar","comercio"],
+  ["argue","discutir / argumentar","social"],["debate","debatir","social"],["discuss","conversar / discutir","social"],["convince","convencer","comunicación"],["persuade","persuadir","comunicación"],
+  ["influence","influir / influenciar","liderazgo"],["inspire","inspirar","emoción"],["motivate","motivar","liderazgo"],["encourage","animar / alentar","social"],["assist","asistir / ayudar","social"],
+  ["collaborate","colaborar","social"],["cooperate","cooperar","social"],["compete","competir","resultado"],["challenge","desafiar","resultado"],["accept","aceptar","acción"],
+  ["reject","rechazar","acción"],["approve","aprobar","acción"],["deny","negar","comunicación"],["confirm","confirmar","comunicación"],["cancel","cancelar","acción"],
+  ["postpone","posponer / aplazar","acción"],["delay","retrasar / demorar","acción"],["rush","apresurarse","movimiento"],["hurry","darse prisa","movimiento"],["relax","relajarse","emoción"],
+  ["rest","descansar","esenciales"],["recover","recuperarse","cambio"],["heal","sanar / curar","cambio"],["treat","tratar","trabajo"],["care","cuidar","social"],
+  ["protect","proteger","acción"],["defend","defender","acción"],["attack","atacar","acción"],["escape","escapar / huir","movimiento"],["hide","esconderse","acción"],
+  ["seek","buscar / procurar","búsqueda"],["locate","ubicar / localizar","búsqueda"],["identify","identificar","conocimiento"],["recognize","reconocer","conocimiento"],["notice","notar / darse cuenta","percepción"],
+  ["observe","observar","percepción"],["perceive","percibir","percepción"],["detect","detectar","percepción"],["sense","sentir / percibir","percepción"],["experience","experimentar / vivir","esenciales"],
+  ["enjoy","disfrutar","emoción"],["suffer","sufrir","emoción"],["worry","preocuparse","emoción"],["fear","temer","emoción"],["hope","esperar / tener esperanza","emoción"],
+  ["wish","desear","deseo"],["miss","extrañar / perder","emoción"],["forgive","perdonar","emoción"],["trust","confiar","social"],["doubt","dudar","mente"],
+  ["wonder","preguntarse / maravillarse","mente"],["realize","darse cuenta / realizar","mente"],["admit","admitir","comunicación"],["promise","prometer","comunicación"],["threaten","amenazar","comunicación"],
+  ["order","ordenar / pedir","comunicación"],["request","solicitar","comunicación"],["demand","exigir","comunicación"],["beg","rogar / suplicar","comunicación"],["complain","quejarse","comunicación"],
+  ["apologize","disculparse","social"],["congratulate","felicitar","social"],["celebrate","celebrar","social"],["honor","honrar","social"],["respect","respetar","social"],
+  ["appreciate","apreciar","emoción"],["value","valorar","emoción"],["earn","ganar / merecer","comercio"],["invest","invertir","comercio"],["borrow","pedir prestado","comercio"],
+  ["lend","prestar","comercio"],["owe","deber","comercio"],["discount","descontar","comercio"],["exchange","intercambiar","comercio"],["trade","comerciar / intercambiar","comercio"],
+  ["hire","contratar","trabajo"],["fire","despedir","trabajo"],["promote","promover / ascender","trabajo"],["resign","renunciar","trabajo"],["retire","jubilarse / retirarse","trabajo"],
+  ["apply","solicitar / aplicar","trabajo"],["interview","entrevistar","trabajo"],["reward","recompensar","trabajo"],["punish","castigar","resultado"],["succeed","tener éxito","resultado"],
+  ["achieve","lograr / alcanzar","resultado"],["accomplish","lograr / cumplir","resultado"],["complete","completar","resultado"],["finish","terminar / acabar","resultado"],["quit","renunciar / dejar","acción"],
+  ["give up","rendirse / abandonar","resultado"],["persist","persistir","acción"],["progress","progresar","cambio"],["improve","mejorar","cambio"],["increase","aumentar","cambio"],
+  ["decrease","disminuir / reducir","cambio"],["expand","expandir","cambio"],["shrink","encoger / reducir","cambio"],["extend","extender / ampliar","cambio"],["limit","limitar","acción"],
+  ["restrict","restringir","acción"],["free","liberar / libertar","acción"],["release","liberar / lanzar","acción"],["launch","lanzar","creación"],["implement","implementar","trabajo"],
+  ["execute","ejecutar","trabajo"],["perform","realizar / ejecutar","trabajo"],["operate","operar","trabajo"],["process","procesar","trabajo"],["handle","manejar / tratar","trabajo"],
+  ["deal","tratar / lidiar","trabajo"],["solve","resolver","conocimiento"],["resolve","resolver / solucionar","conocimiento"],["correct","corregir","acción"],["adjust","ajustar","acción"],
+  ["modify","modificar","cambio"],["update","actualizar","cambio"],["replace","reemplazar","acción"],["remove","quitar / eliminar","acción"],["combine","combinar","acción"],
+  ["separate","separar","acción"],["divide","dividir","acción"],["multiply","multiplicar","acción"],["count","contar","conocimiento"],["check","revisar / comprobar","conocimiento"],
+  ["verify","verificar","conocimiento"],["review","revisar / reseñar","conocimiento"],["edit","editar","creación"],["revise","revisar / corregir","creación"],["publish","publicar","comunicación"],
+  ["distribute","distribuir","acción"],["collect","coleccionar / recolectar","acción"],["gather","recopilar / reunir","acción"],["store","almacenar","acción"],["preserve","preservar","acción"],
+  ["secure","asegurar","acción"],["lock","cerrar con llave","acción"],["unlock","desbloquear / abrir","acción"],["close","cerrar","acción"],["pause","pausar","acción"],
+  ["resume","reanudar","acción"],["restart","reiniciar","acción"],["reset","restablecer","acción"],["shut down","apagar","tecnología"],["boot up","arrancar","tecnología"],
+  ["log in","iniciar sesión","tecnología"],["log out","cerrar sesión","tecnología"],["back up","respaldar","tecnología"],["restore","restaurar","tecnología"],["sync","sincronizar","tecnología"],
+  ["convert","convertir","cambio"],["compress","comprimir","tecnología"],["extract","extraer","tecnología"],["encrypt","cifrar / encriptar","tecnología"],["format","formatear","tecnología"]
+];
+
+const allCats = ["Todos", ...new Set(verbos.map(v => v[2]))].sort((a,b) => a==="Todos"?-1:b==="Todos"?1:a.localeCompare(b));
+let currentCat = "Todos";
+let filtered = [...verbos];
+let idx = 0;
+let favorites = new Set();
+let dragging = false, startX = 0, startY = 0, currentX = 0;
+
+const cardMain = document.getElementById('cardMain');
+const cardEn = document.getElementById('cardEn');
+const cardEs = document.getElementById('cardEs');
+const cardCat = document.getElementById('cardCat');
+const cardNumber = document.getElementById('cardNumber');
+const progressFill = document.getElementById('progressFill');
+const progressPct = document.getElementById('progressPct');
+const progressLabel = document.getElementById('progressLabel');
+const idxDisplay = document.getElementById('idxDisplay');
+const totalDisplay = document.getElementById('totalDisplay');
+const btnFav = document.getElementById('btnFav');
+const catScroll = document.getElementById('catScroll');
+const searchOverlay = document.getElementById('searchOverlay');
+const searchInput = document.getElementById('searchInput');
+const searchResults = document.getElementById('searchResults');
+
+function buildCategories() {
+  catScroll.innerHTML = '';
+  allCats.forEach(cat => {
+    const pill = document.createElement('span');
+    pill.className = 'cat-pill' + (cat === 'Todos' && currentCat === 'Todos' || cat === currentCat ? ' active' : '');
+    pill.textContent = cat.charAt(0).toUpperCase() + cat.slice(1);
+    pill.addEventListener('click', () => {
+      currentCat = cat === 'Todos' ? 'Todos' : cat;
+      filtered = currentCat === 'Todos' ? [...verbos] : verbos.filter(v => v[2] === currentCat);
+      idx = 0;
+      buildCategories();
+      updateCard('right');
+    });
+    catScroll.appendChild(pill);
+  });
+}
+
+function updateCard(dir) {
+  const v = filtered[idx];
+  const num = String(idx + 1).padStart(3, '0');
+  const total = filtered.length;
+  const pct = Math.round(((idx + 1) / total) * 100);
+
+  progressFill.style.width = pct + '%';
+  progressPct.textContent = pct + '%';
+  progressLabel.textContent = currentCat === 'Todos' ? 'Todos los verbos' : currentCat.charAt(0).toUpperCase() + currentCat.slice(1);
+  idxDisplay.textContent = idx + 1;
+  totalDisplay.textContent = total;
+  cardNumber.textContent = num + ' / ' + String(total).padStart(3, '0');
+  cardEn.textContent = v[0];
+  cardEs.textContent = v[1];
+  cardCat.textContent = v[2];
+
+  const globalIdx = verbos.indexOf(v);
+  btnFav.classList.toggle('active', favorites.has(globalIdx));
+
+  if (dir) {
+    cardMain.classList.remove('animating', 'slide-left', 'slide-right', 'slide-in-left', 'slide-in-right');
+    void cardMain.offsetWidth;
+    cardMain.classList.add('slide-in-' + dir);
+    setTimeout(() => cardMain.classList.remove('slide-in-left', 'slide-in-right'), 400);
+  }
+}
+
+function goNext() {
+  if (idx < filtered.length - 1) { idx++; updateCard('left'); }
+}
+function goPrev() {
+  if (idx > 0) { idx--; updateCard('right'); }
+}
+
+document.getElementById('btnNext').addEventListener('click', goNext);
+document.getElementById('btnPrev').addEventListener('click', goPrev);
+
+btnFav.addEventListener('click', () => {
+  const v = filtered[idx];
+  const globalIdx = verbos.indexOf(v);
+  if (favorites.has(globalIdx)) favorites.delete(globalIdx);
+  else favorites.add(globalIdx);
+  btnFav.classList.toggle('active', favorites.has(globalIdx));
+});
+
+// Keyboard
+document.addEventListener('keydown', e => {
+  if (searchOverlay.classList.contains('open')) return;
+  if (e.key === 'ArrowRight') goNext();
+  else if (e.key === 'ArrowLeft') goPrev();
+});
+
+// Touch / drag
+cardMain.addEventListener('touchstart', e => {
+  startX = e.touches[0].clientX;
+  startY = e.touches[0].clientY;
+  dragging = true;
+  currentX = 0;
+  cardMain.style.transition = 'none';
+}, { passive: true });
+
+cardMain.addEventListener('touchmove', e => {
+  if (!dragging) return;
+  const dx = e.touches[0].clientX - startX;
+  const dy = e.touches[0].clientY - startY;
+  if (Math.abs(dy) > Math.abs(dx) && Math.abs(currentX) < 10) return;
+  currentX = dx;
+  const rot = dx * 0.04;
+  cardMain.style.transform = `translateX(${dx}px) rotate(${rot}deg)`;
+}, { passive: true });
+
+cardMain.addEventListener('touchend', () => {
+  if (!dragging) return;
+  dragging = false;
+  cardMain.style.transition = '';
+  if (currentX < -60) {
+    cardMain.classList.add('animating', 'slide-left');
+    setTimeout(() => { cardMain.style.transform = ''; goNext(); }, 300);
+  } else if (currentX > 60) {
+    cardMain.classList.add('animating', 'slide-right');
+    setTimeout(() => { cardMain.style.transform = ''; goPrev(); }, 300);
+  } else {
+    cardMain.style.transform = '';
+  }
+});
+
+// Mouse drag
+cardMain.addEventListener('mousedown', e => {
+  startX = e.clientX;
+  dragging = true; currentX = 0;
+  cardMain.style.transition = 'none';
+  e.preventDefault();
+});
+window.addEventListener('mousemove', e => {
+  if (!dragging) return;
+  currentX = e.clientX - startX;
+  const rot = currentX * 0.04;
+  cardMain.style.transform = `translateX(${currentX}px) rotate(${rot}deg)`;
+});
+window.addEventListener('mouseup', () => {
+  if (!dragging) return;
+  dragging = false;
+  cardMain.style.transition = '';
+  if (currentX < -80) {
+    cardMain.classList.add('animating', 'slide-left');
+    setTimeout(() => { cardMain.style.transform = ''; goNext(); }, 300);
+  } else if (currentX > 80) {
+    cardMain.classList.add('animating', 'slide-right');
+    setTimeout(() => { cardMain.style.transform = ''; goPrev(); }, 300);
+  } else {
+    cardMain.style.transform = '';
+  }
+});
+
+// Search
+document.getElementById('btnSearch').addEventListener('click', () => {
+  searchOverlay.classList.add('open');
+  setTimeout(() => searchInput.focus(), 100);
+  renderSearch('');
+});
+document.getElementById('searchCancel').addEventListener('click', () => {
+  searchOverlay.classList.remove('open');
+  searchInput.value = '';
+});
+searchInput.addEventListener('input', () => renderSearch(searchInput.value));
+
+function renderSearch(q) {
+  const term = q.toLowerCase().trim();
+  const matches = verbos.filter(v => !term || v[0].includes(term) || v[1].toLowerCase().includes(term));
+  if (!matches.length) {
+    searchResults.innerHTML = '<div class="search-empty">No se encontraron resultados</div>';
+    return;
+  }
+  searchResults.innerHTML = matches.slice(0, 80).map(v => {
+    const i = verbos.indexOf(v);
+    return `<div class="search-item" data-idx="${i}">
+      <div class="si-left"><div class="si-en">${v[0]}</div><div class="si-es">${v[1]}</div></div>
+      <span class="si-badge">${v[2]}</span>
+    </div>`;
+  }).join('');
+  searchResults.querySelectorAll('.search-item').forEach(el => {
+    el.addEventListener('click', () => {
+      const i = parseInt(el.dataset.idx);
+      currentCat = 'Todos';
+      filtered = [...verbos];
+      idx = i;
+      buildCategories();
+      updateCard('right');
+      searchOverlay.classList.remove('open');
+      searchInput.value = '';
+    });
+  });
+}
+
+buildCategories();
+updateCard(null);
+</script>
+</body>
+</html>
